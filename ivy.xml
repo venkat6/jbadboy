@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<ivy-module version="1.3">
+  <info organisation="badboy" module="jbadboy"/>
+  <publications>
+    <artifact name="jbadboy"/>
+  </publications>
+ <dependencies>
+   <dependency org="apache" name="log4j" rev="1.2.8"/>
+   <dependency org="commons-lang" name="commons-lang" rev="2.4" />
+ </dependencies>
+</ivy-module>

@@ -1,0 +1,7 @@
+<registry>
+  <pack name="Base">
+    <value name="" keypath="SOFTWARE\JBadboy" root="HKLM" string="$INSTALL_PATH" override="true"/>
+    <value name="" keypath="Badboy.Document\shell\playjb" root="HKCR" string="Play with JBadboy" override="true"/>
+    <value name="" keypath="Badboy.Document\shell\playjb\command" root="HKCR" string='"$INSTALL_PATH\jbadboy.bat" "%1"' override="true"/>
+  </pack>
+</registry>

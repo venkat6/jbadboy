@@ -1,0 +1,186 @@
+/**
+ * JBadboy Build Script
+ *
+ * Compiles all Java / Groovy code in src dir to build dir,
+ * packages output into jbadboy.jar.
+ *
+ * Two optional dependencies: IzPack and NSIS Make. To enable
+ * these, install them and define their install directories
+ * in build.properties file as 
+ *
+ *  izpack_basedir=...
+ *  nsis_basedir=...
+ *
+ * These are only needed to create the redistributable installer.
+ *
+ * Author:  Simon Sadedin, Badboy Software.
+ */
+
+includeTool << gant.tools.Ivy
+
+println """
+==========================================================
+
+JBadboy Build - Building at ${new Date()}
+
+==========================================================
+"""
+
+// Default build parameters
+def os_excludes = ['solaris-x86']
+def platform = 'all'
+def version = '0.1'
+
+// Load default settings
+def properties = new Properties()
+if(new File('build.properties').exists())
+  properties.load(new FileInputStream('build.properties'))
+
+// If IzPack enabled, define it's task
+if(properties?.izpack_basedir) 
+  ant.taskdef ( name : 'IzPack' , classname : 'com.izforge.izpack.ant.IzPackTask' , classpath: properties.izpack_basedir+'/lib/compiler.jar')
+
+ant.path(id: 'build_classpath') {
+  fileset(dir: 'lib', includes: '*.jar')
+  fileset(dir: 'mozswing/lib', includes: '*.jar')
+}
+
+target(init: 'check dependencies') {
+
+  println "\nResolving dependencies ...\n"
+
+  ivy.retrieve(pattern:'lib/[artifact].[ext]',sync:'false', log:'quiet')
+
+  if(!new File('mozswing').exists()) {
+    def mozswings = []
+    new File('.').eachFileMatch(~/mozswing.*.zip/,{mozswings << it})
+    if(!mozswings) {
+      ant.fail("Failed to locate valid mozswing installation or zip file\n\n" +
+               "Please download mozswing and place the zip file in this directory.");
+    }
+    mkdir(dir:'mozswing')
+    ant.unzip(src:mozswings[0].name, dest: 'mozswing');
+  }
+}
+
+// Compile all Java and Groovy files to build directory
+target(compile: 'compile everything') {
+  depends(init)
+  mkdir(dir: 'build/classes')
+  ant.groovyc(srcdir: 'src', destdir: 'build/classes') {
+    classpath {
+      path ( refid : 'build_classpath' )
+    }
+    javac(source : '1.5' , target : '1.5' , debug : 'on') {
+      classpath {
+        path ( refid : 'build_classpath' )
+      }
+    }
+  }
+}
+
+// Package everything into a jar
+target(jars: 'make a jar file') {
+  depends(compile)
+  def libs = []
+  new File('lib').eachFile() {
+    if(it.name != '.svn' && !(it.name =~ /testng.*/))
+      libs << it.name
+  }
+  ant.jar(destfile: 'build/jbadboy.jar', basedir: 'build/classes') {
+    manifest() {
+      attribute(name: 'Main-Class', value:'com.badboy.jbadboy.Runner')
+      attribute(name: 'Class-Path', value:libs.join(' ')+' mozswing/lib/MozillaGlue-1.9.jar mozswing/lib/MozillaInterfaces-1.9.jar	mozswing/lib/base64-2.2.2.jar mozswing/lib/commons-logging-1.1.jar mozswing/lib/jna.jar mozswing/lib/mozdom4java.jar mozswing/lib/mozswing.jar')
+    }
+  }
+}
+
+
+target(dist: 'make complete distribution') {
+  depends(jars)
+
+  println "\nMaking distribution [ Excluded OSes: " + os_excludes.join(',') + "]\n\n"
+  mkdir(dir: 'dist')
+  def excluded = os_excludes.collect{'mozswing/native/'+it+'/'}.join(',');
+  ant.copy(todir: 'dist') {
+    fileset(dir: '.', excludes:excluded) {
+       include(name:'mozswing/**')
+       include(name:'xsl/**')
+       exclude(name:'mozswing/src/')
+       exclude(name: excluded)
+    }
+  }
+  ant.copy(todir: 'dist') {
+    fileset(dir: 'build', includes: '*.jar')
+    fileset(dir: 'lib', includes: 'groovy-all-*.jar,ant.jar,ant-launcher.jar,commons-lang.jar,log4j*.jar')
+    fileset(dir: 'bin', includes: '*')
+    fileset(dir: '.', includes: 'COPYING,README')
+  }
+
+  // Write out the version number to version.txt
+  ant.delete(file: 'dist/version.txt');
+  ant.delete(file: 'dist/platform.txt');
+  new File('dist/version.txt') << version
+  new File('dist/platform.txt') << platform
+
+  println "Distribution for platforms ${platform} created successfully!\n"
+}
+
+target(installer: 'make installer for selected platform(s)') {
+  if(!new File('dist').exists())
+    throw new Exception('Please run "dist" target first to create distribution for packaging into installer')
+
+  if(!new File('build.properties').exists()) 
+    throw new Exception('Could not find build.properties file needed to locate IzPack installation.\n\nPlease install IzPack and see build.properties.example.')
+
+  version = new File('dist/version.txt').text.trim()
+  platform = new File('dist/platform.txt').text.trim()
+
+  ant.delete(dir: 'install')
+  ant.mkdir(dir: 'install')
+
+  ant.IzPack(input: 'installer/install.xml', 
+             output: 'install/install.jar',
+             installerType: 'standard', 
+             basedir: 'installer', 
+             IzPackDir: properties.izpack_basedir)
+
+  // If NSIS available, make native exe wrapper
+  def windowsExe = false;
+  if(properties.nsis_basedir && platform=~/win/) {
+    ant.echo(message:"Building native exe wrapper for jar executable ...")
+    ant.copy(file:"installer/script.nsi",tofile:"install/script.nsi")
+    new File('nsis.out').text = "${properties.nsis_basedir}/makensis.exe install/script.nsi".execute().text
+    if(!new File('install/setup.exe').exists())
+      throw new Exception("Failed to run NSIS Make: please check nsis.out")
+
+    windowsExe = "install/JBadboyInstaller-${version}.exe"
+    ant.move(file: 'install/setup.exe', tofile: windowsExe)
+  }
+
+  def outputFile = "install/JBadboyInstaller-${version}.jar"
+  ant.move(file:'install/install.jar', tofile: outputFile)
+
+  println "\nCross Platform Installer: \t${outputFile}"
+  if(windowsExe) 
+    println "Native Windows Installer: \t${windowsExe}"
+}
+
+target(clean: 'delete all build products') {
+  delete(dir: 'build')
+  delete(dir: 'dist')
+  delete(dir: 'install')
+}
+
+target(win: 'build distribution for windows') {
+  os_excludes << 'macosx' << 'linux'
+  platform = 'win'
+  depends(dist)
+}
+
+target( world: 'build everything') {
+  depends(dist)
+  println 'Building everything'
+}
+
+setDefaultTarget(world)

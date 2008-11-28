@@ -1,0 +1,9 @@
+#
+# This is an example of the kind of properties file that
+# you need to set parameters for where IzPack and NSIS
+# live in case you want to make installers for JBadboy
+#
+# Copy this file to 'build.properties' and set the appropriate
+# paths below.
+izpack_basedir=c:/programs/izpack
+nsis_basedir=c:/Program Files/NSIS

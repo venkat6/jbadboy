@@ -1,0 +1,14 @@
+JBadboy is a Java based player for Badboy scripts based on XulRunner, the
+Mozilla based runtime that uses the Gecko rendering engine underlying FireFox.
+
+JBadboy is not 100% compatible with Badboy in how it plays back scripts, however
+it has a long term goal to reach very close to 100% compatibility.  You can 
+help by reporting your own experience with JBadboy and, if you are knowledgable
+about software development, contributing your own fixes and patches to the
+JBadboy source code.
+
+JBadboy is distributed by Badboy Software, Australia.  For more information,
+please see the website at http://www.badboy.com.au, or contact ssadedin@badboy.com.au.
+
+For instructions on using JBadboy, see documentation in the 'doc' directory or the 
+online wiki at http://code.google.com/p/jbadboy/wiki/Using.
