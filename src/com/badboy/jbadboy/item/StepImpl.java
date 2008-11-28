@@ -30,6 +30,7 @@ import com.badboy.jbadboy.ScriptIterator;
 import com.badboy.jbadboy.Variable;
 import com.badboy.jbadboy.model.Step;
 import com.badboy.jbadboy.util.Function;
+import com.badboy.jbadboy.util.Str;
 
 public class StepImpl extends Step {
     
@@ -87,6 +88,9 @@ public class StepImpl extends Step {
         getContext().getScriptEngine().getPlayPosition().seek(this.getSubItems().get(0), ScriptIterator.Location.ON);
     }
 
+    /**
+     * Search for repeat variables with data sources configured for this step, if any.
+     */
     private List<Variable> resolveRepeatVariables() throws ExecutionException {
         Variable v = context.getVariable(this.getRepeatVariable());
         if(v == null)
@@ -95,7 +99,7 @@ public class StepImpl extends Step {
         String dataSourceId = v.getDataSourceId();
         List<Variable> results = new ArrayList<Variable>();
         for(Variable var : context.getVariables().values()) {
-           if(var.getDataSourceId().equals(dataSourceId)) {
+           if(Str.eq(var.getDataSourceId(),dataSourceId)) {
                results.add(var);
            }
         }
