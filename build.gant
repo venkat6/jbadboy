@@ -95,6 +95,42 @@ target(jars: 'make a jar file') {
   }
 }
 
+target(tests: 'compile and run junit tests') {
+
+  depends(compile)
+
+  mkdir(dir: 'build/test-classes')
+  ant.groovyc(srcdir: 'test-src', destdir: 'build/test-classes') {
+    classpath {
+      path (refid : 'build_classpath')
+      pathelement(location: 'build/classes')
+    }
+    javac(source : '1.5' , target : '1.5' , debug : 'on') {
+      classpath {
+        path ( refid : 'build_classpath' )
+        pathelement(location: 'build/classes')
+      }
+    }
+  }
+
+  delete(dir: 'test-results')
+  mkdir(dir:'test-results')
+  ant.junit(printsummary: 'withOutAndErr',fork: 'yes', failureproperty: "jbadboy_tests_failed") {
+    classpath {
+      path ( refid : 'build_classpath' )
+      pathelement(location: 'build/classes')
+      pathelement(location: 'build/test-classes')
+    }
+    formatter (type: 'plain')
+    batchtest (todir: 'test-results') {
+      fileset(dir: 'build/test-classes') {
+        include(name: '**/*Test.class')
+      }
+    }
+  }
+  if(ant.project.properties.jbadboy_tests_failed)
+    throw new Exception("One or more JUnit tests failed!")
+}
 
 target(dist: 'make complete distribution') {
   depends(jars)

@@ -20,28 +20,16 @@
  */
 
 
- package com.badboy.jbadboy.item
+package com.badboy.jbadboy.item
 
 import com.badboy.jbadboy.ScriptContext
 import com.badboy.jbadboy.model.Parameter
-import org.testng.annotations.*
-import org.testng.TestNG
-import org.testng.TestListenerAdapter
-import static org.testng.AssertJUnit.*;
+
+import static org.junit.Assert.*
+import org.junit.Test
 
 public class ParameterTest {
 
-	/**
-	* Main entry point to run <code>ParameterTest</code> as
-	* simple Groovy class
-	*/
-	public static void main(String[] args){
-		def testng = new TestNG()
-		testng.setTestClasses(ParameterTest)
-		testng.addListener(new TestListenerAdapter())
-		testng.run()
-	}
-	
 	@Test
 	final void testEncode(){
 	    ScriptContext c = new ScriptContext()

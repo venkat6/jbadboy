@@ -26,15 +26,23 @@
  */
 package com.badboy.jbadboy.model;
 
+import org.apache.commons.lang.NotImplementedException;
+
 import com.badboy.jbadboy.item.*;
 		
 public class Playable extends ScriptItem implements Summarizable {
 
     
+	/**
+	 * Default play method - this method should be overridden by child 
+	 * classes to implement actual playback behavior.
+	 * 
+	 * @throws ExecutionException
+	 */
     public void play() throws ExecutionException {
+    	throw new NotImplementedException("Item of type " + this.getClass().getName() + " is not implemented in JBadboy");
     }
 
-    
 	Summary summary;
 	
 	public Summary getSummary() {

@@ -24,10 +24,10 @@ package com.badboy.jbadboy.item
 
 import com.badboy.jbadboy.browser.Browser
 import com.badboy.jbadboy.browser.QueryInterface
-import org.testng.annotations.*
-import org.testng.TestNG
-import org.testng.TestListenerAdapter
-import static org.testng.AssertJUnit.*;
+
+import static org.junit.Assert.*
+import org.junit.Test
+ 
 import org.w3c.dom.html.HTMLInputElement
 import org.w3c.dom.html.HTMLElement
 import org.w3c.dom.html.HTMLFormElement
@@ -37,29 +37,15 @@ import org.w3c.dom.NodeList
 import org.w3c.dom.html.HTMLTextAreaElement
 import com.badboy.jbadboy.ScriptContext
 import org.codehaus.groovy.runtime.StackTraceUtils
+
 interface TestElement extends HTMLElement {
     def getData() 
 }
 
 public class FormValueImplTest {
     
-    ScriptContext ctx = new ScriptContext();
+   ScriptContext ctx = new ScriptContext();
 
-	/**
-	* Main entry point to run <code>FormValueImplTest</code> as
-	* simple Groovy class
-	*/
-	public static void main(String[] args){
-		def testng = new TestNG()
-		testng.setTestClasses(FormValueImplTest)
-		testng.addListener(
-		        [
-		          onTestFailure: { println "Test ${it.method} - Failed! "; if(it.throwable) StackTraceUtils.sanitize(it.throwable).printStackTrace(System.out); },
-		          onTestSuccess: { println "Test ${it.method} - Succeeded"}
-		        ] as TestListenerAdapter );
-		testng.run()
-	}
-	
    def getElement(def e) {
        def data = [ getAttribute: { a -> e[a] }, 
          getTagName: { e.tagName }, 

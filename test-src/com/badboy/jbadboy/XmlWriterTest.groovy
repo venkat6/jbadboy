@@ -24,20 +24,13 @@ package com.badboy.jbadboy
 
 import com.badboy.jbadboy.item.ScriptItem
 import com.badboy.jbadboy.model.Assertion
-import org.testng.annotations.*
-import org.testng.TestNG
-import org.testng.TestListenerAdapter
-import static org.testng.AssertJUnit.*;
 import com.badboy.jbadboy.item.Script
+
+import static org.junit.Assert.*
+import org.junit.Test
+
 public class XmlWriterTest {
 
-	public static void main(String[] args){
-		def testng = new TestNG()
-		testng.setTestClasses(XmlWriterTest)
-		testng.addListener(new TestListenerAdapter())
-		testng.run()
-	}
-	
 	@Test
 	final void testWrite(){
 	    XmlWriter w = new XmlWriter()

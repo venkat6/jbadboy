@@ -25,21 +25,11 @@ package com.badboy.jbadboy.item
 import com.badboy.jbadboy.model.AssertionFailure
 import com.badboy.jbadboy.model.ContentCheckItem
 
-import org.testng.annotations.*
-import org.testng.TestNG
-import org.testng.TestListenerAdapter
-import static org.testng.AssertJUnit.*;
+import static org.junit.Assert.*
+import org.junit.Test
 
 public class AssertionTest {
-
-	public static void main(String[] args){
-		def testng = new TestNG()
-		testng.setTestClasses(AssertionTest)
-		testng.addListener(new TestListenerAdapter())
-		testng.run()
-	}
-	
-	
+ 
 	@Test
 	final void testNoChecks(){
 	    AssertionImpl ai = new AssertionImpl();
@@ -53,16 +43,18 @@ public class AssertionTest {
 	    AssertionImpl ai = new AssertionImpl();
 	    
 	    // Test failed
-	    ContentCheckItem check = [ check: {new CheckResult(CheckExecutionStatus.FAILED,"unit test")} ] as ContentCheckItemImpl
-	    ai.addChild(check)
+	    ContentCheckItem check1 = [ check: {new CheckResult(CheckExecutionStatus.FAILED,"unit test")} ] as ContentCheckItemImpl
+	    ai.addChild(check1)
 	    assertEquals(0,ai.summary.assertions)
 	    ai.play()
 	    assertEquals(1,ai.summary.assertions)
 	    
 	    // Test succeeded
+	    ai.subItems.clear()
 	    ai.summary.clear()
-	    check = [ check: {new CheckResult(CheckExecutionStatus.SUCCEEDED,"unit test")} ] as ContentCheckItemImpl
-	    ai.addChild(check)
+	    ContentCheckItem check2 = [ check: {new CheckResult(CheckExecutionStatus.SUCCEEDED,"unit test")} ] as ContentCheckItemImpl
+	    ai.addChild(check1)
+	    ai.addChild(check2)
 	    ai.play()
 	    
 	    // 1 succeeded, 1 failed

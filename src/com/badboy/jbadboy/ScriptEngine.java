@@ -136,6 +136,8 @@ public class ScriptEngine {
 
     public void setScriptContext(ScriptContext scriptContext) {
         this.scriptContext = scriptContext;
+        this.playPosition = new ScriptIterator(scriptContext.getScript());
+        playPosition.forward();
         scriptContext.setScriptEngine(this);
     }
 

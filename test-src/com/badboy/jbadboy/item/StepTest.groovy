@@ -29,29 +29,34 @@ import static org.junit.Assert.*
 import org.junit.Test
 import com.badboy.jbadboy.ScriptContext
 import com.badboy.jbadboy.Variable
-
+import com.badboy.jbadboy.ScriptEngine
 /**
  * @author ssadedin
  *
  */
 public class StepTest{
     
+	 /*
     static final junit.framework.Test suite(){
         return new junit.framework.JUnit4TestAdapter(StepTest.class);
     }
+    */
     
     @Test
     void testPlay() {
-        ScriptContext ctx = new ScriptContext();
+    	ScriptEngine engine = new ScriptEngine()
+        ScriptContext ctx = new ScriptContext(scriptEngine:engine)
+    	
         Variable v = new Variable("hello","world")
         v.dataSourceId = "123"
         v.values << "foo" << "bar" << "tree"
         ctx.variables["hello"] = v
-        
         ctx.variables["z"] = new Variable(name:"z", value:"world", dataSourceId:"123", values:["a", "b", "c"]);
         
         StepImpl s = new StepImpl(context: ctx, repeatType: StepImpl.REPEAT_TYPE_VARIABLE, repeatVariable: "hello");
         s.addChild(new ScriptItem());
+    	ctx.script = s
+    	engine.scriptContext = ctx
         
         // Play the step, variable should get set to the first value
         s.play()

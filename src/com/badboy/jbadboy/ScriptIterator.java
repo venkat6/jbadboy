@@ -43,7 +43,7 @@ public class ScriptIterator {
     }
     
     public ScriptItem forward() {
-        
+    	
         if(location == Location.AFTER)
             return null;
         

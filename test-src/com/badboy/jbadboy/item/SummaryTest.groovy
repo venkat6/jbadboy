@@ -22,29 +22,15 @@
 
  package com.badboy.jbadboy.item
 
-
-import org.testng.annotations.*
-import org.testng.TestNG
-import org.testng.TestListenerAdapter
-import static org.testng.AssertJUnit.*;
+import static org.junit.Assert.*
+import org.junit.Test
 
 public class SummaryTest {
 
-	/**
-	* Main entry point to run <code>SummaryTest</code> as
-	* simple Groovy class
-	*/
-	public static void main(String[] args){
-		def testng = new TestNG()
-		testng.setTestClasses(SummaryTest)
-		testng.addListener(new TestListenerAdapter())
-		testng.run()
-	}
-	
 	@Test
 	final void testAdd(){
 	    def s1 = new Summary();
-	    def s2 = new Summary(played:7,succeeded:4,failed:3,assertions:4,averageTimeMs:200.00,maxTimeMs:700, minTimeMs:100);
+	    def s2 = new Summary(played:7,succeeded:4,failed:3,assertions:4,averageResponseTime:200.00,maxResponseTime:700, minTimeMs:100);
 	    
 	    // Add to blank
 	    s1.add(s2);
@@ -52,8 +38,8 @@ public class SummaryTest {
 	    assertEquals(4,s1.succeeded)
 	    assertEquals(3,s1.failed)
 	    assertEquals(4,s1.assertions)
-	    assertTrue(200.00-s1.averageTimeMs<0.001)
-	    assertEquals(700,s1.maxTimeMs)
+	    assertTrue(200.00-s1.averageResponseTime<0.001)
+	    assertEquals(700,s1.maxResponseTime)
 	    
 	    // Special case - because it's adding the first played item, it should accept 100 even though
 	    // the initial value (0) is smaller than 100
@@ -62,14 +48,14 @@ public class SummaryTest {
 	    
 	    // Now add to non-blank
 	    s1.minTimeMs = 100
-	    def s3 = new Summary(played:2,succeeded:1,failed:1,assertions:1,averageTimeMs:600.00,maxTimeMs:1700, minTimeMs:50)
+	    def s3 = new Summary(played:2,succeeded:1,failed:1,assertions:1,averageResponseTime:600.00,maxResponseTime:1700, minTimeMs:50)
 	    s1.add(s3)
 	    assertEquals(9,s1.played)
 	    assertEquals(5,s1.succeeded)
 	    assertEquals(4,s1.failed)
 	    assertEquals(5,s1.assertions)
-	    assertTrue((7*200 + 2*600) / 9 - s1.averageTimeMs<0.001)
-	    assertEquals(1700,s1.maxTimeMs)
+	    assertTrue((7*200 + 2*600) / 9 - s1.averageResponseTime<0.001)
+	    assertEquals(1700,s1.maxResponseTime)
 	    assertEquals(50,s1.minTimeMs)
 	}
 	
@@ -80,16 +66,16 @@ public class SummaryTest {
 	    assertEquals(1,s.getPlayed())
 	    assertEquals(1,s.getSucceeded())
 	    assertEquals(0,s.getFailed())
-	    assertTrue(s.getAverageTimeMs()-100.0 < 0.001)
-	    assertEquals(100,s.getMaxTimeMs())
+	    assertTrue(s.averageResponseTime-100.0 < 0.001)
+	    assertEquals(100,s.maxResponseTime)
 	    assertEquals(100,s.getMinTimeMs())
 	    
 	    s.played(false, 300)
 	    assertEquals(2, s.getPlayed())
 	    assertEquals(1, s.getSucceeded())
 	    assertEquals(1, s.getFailed())
-	    assertTrue(s.getAverageTimeMs()-200.0 < 0.001)
-	    assertEquals(300, s.getMaxTimeMs())
+	    assertTrue(s.averageResponseTime-200.0 < 0.001)
+	    assertEquals(300, s.maxResponseTime)
 	    assertEquals(100, s.getMinTimeMs())
 	}
 

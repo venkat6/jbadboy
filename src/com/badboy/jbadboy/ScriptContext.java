@@ -61,7 +61,7 @@ public class ScriptContext implements IBadboy {
 	 * All the variables known by the script
 	 */
     HashMap<String, Variable> variables  = new HashMap<String, Variable>();
-	
+    
 	public HashMap<String, Variable> getVariables() {
         return variables;
     }

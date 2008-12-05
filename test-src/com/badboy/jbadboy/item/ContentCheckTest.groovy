@@ -26,34 +26,21 @@ import org.w3c.dom.html.HTMLElement
 import com.badboy.jbadboy.browser.Browser
 import com.badboy.jbadboy.model.Playable
 import com.badboy.jbadboy.ScriptContext
-import org.testng.annotations.*
-import org.testng.TestNG
-import org.testng.TestListenerAdapter
-import static org.testng.AssertJUnit.*;
+
+import static org.junit.Assert.*
+import org.junit.Test
 
 public class ContentCheckTest {
 
-	/**
-	* Main entry point to run <code>ContentCheckTest</code> as
-	* simple Groovy class
-	*/
-	public static void main(String[] args){
-		def testng = new TestNG()
-		testng.setTestClasses(ContentCheckTest)
-		testng.addListener(new TestListenerAdapter())
-		testng.run()
-	}
-	
-	
-	/**
-	*
-	*/
 	@Test
 	final void testCheck(){
 	    def c = new ContentCheckItemImpl();
 	    
 	    def body = [ : ] as HTMLElement
-	    def browser = [ getBodyElement: { body }, getElementText: { "foo bar bam 123 *" } ] as Browser
+	    def browser = [ getBodyElement: { body }, 
+	                    getElementText: { "foo bar bam 123 *" },
+	                    getInnerHTML: { "foo bar bam 123 *" }  
+	                  ] as Browser
 	    def p = [ getTargetBrowser: { browser } ] as Playable
 	    def ctx = [ getTargetBrowser: { browser } ] as ScriptContext
 	    c.context = ctx

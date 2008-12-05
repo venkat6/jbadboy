@@ -26,24 +26,11 @@ import org.testng.annotations.ExpectedExceptions
 import org.junit.Test
 import com.badboy.jbadboy.item.ExecutionException
 
-import org.testng.annotations.*
-import org.testng.TestNG
-import org.testng.TestListenerAdapter
-import static org.testng.AssertJUnit.*;
+import static org.junit.Assert.*
+import org.junit.Test
 
 public class ScriptContextTest {
 
-	/**
-	* Main entry point to run <code>ScriptContextTest</code> as
-	* simple Groovy class
-	*/
-	public static void main(String[] args){
-		def testng = new TestNG()
-		testng.setTestClasses(ScriptContextTest)
-		testng.addListener(new TestListenerAdapter())
-		testng.run()
-	}
-	
 	@Test
 	final void testVariableSubstitution(){
 	    def ctx = new ScriptContext();
@@ -69,6 +56,7 @@ public class ScriptContextTest {
 	    try {
 		    def ctx = new ScriptContext();
 		    ctx.setVariable('r','${r}')
+		    ctx.eval('${r}')
 		    fail("Should not get here");
 	    }
 	    catch(ExecutionException ex) {

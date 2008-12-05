@@ -85,7 +85,7 @@ public class StepImpl extends Step {
     }
     
     private void seekFirstChild() {
-        getContext().getScriptEngine().getPlayPosition().seek(this.getSubItems().get(0), ScriptIterator.Location.ON);
+        getContext().getScriptEngine().getPlayPosition().seek(this.getSubItems().get(0), ScriptIterator.Location.ON); 
     }
 
     /**

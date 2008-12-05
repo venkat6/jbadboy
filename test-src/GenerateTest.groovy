@@ -1,20 +1,5 @@
-import com.badboy.jbadboy.ScriptModelimport com.badboy.jbadboy.model.generator.CPP2Javaimport org.testng.annotations.*
-import org.testng.TestNG
-import org.testng.TestListenerAdapter
-import static org.testng.AssertJUnit.*;
-
-public class GenerateTest {
-
-	/**
-	* Main entry point to run <code>GenerateTest</code> as
-	* simple Groovy class
-	*/
-	public static void main(String[] args){
-		def testng = new TestNG()
-		testng.setTestClasses(GenerateTest)
-		testng.addListener(new TestListenerAdapter())
-		testng.run()
-	}		@Test	void testFindType() {		CPP2Java g = new CPP2Java()		assertEquals("java.lang.Integer",g.findType("ClickItem","xPosition").class.name)	}
+import com.badboy.jbadboy.ScriptModelimport com.badboy.jbadboy.model.generator.CPP2Javaimport static org.junit.Assert.*import org.junit.Testpublic class GenerateTest {
+		@Test	void testFindType() {		CPP2Java g = new CPP2Java()		assertEquals("java.lang.Integer",g.findType("ClickItem","xPosition").class.name)	}
 	
 	@Test
 	final void testParseStringProperty(){

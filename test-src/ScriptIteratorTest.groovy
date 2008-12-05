@@ -1,27 +1,14 @@
 /**
  * 
  */
-import org.testng.annotations.*
-import org.testng.TestNG
-import org.testng.TestListenerAdapter
-import static org.testng.AssertJUnit.*;
-
 import com.badboy.jbadboy.item.ScriptItem;
 import com.badboy.jbadboy.ScriptIterator;
 
+import static org.junit.Assert.*
+import org.junit.Test
+
 public class ScriptIteratorTest {
 
-	/**
-	* Main entry point to run <code>ScriptIteratorTest</code> as
-	* simple Groovy class
-	*/
-	public static void main(String[] args){
-		def testng = new TestNG()
-		testng.setTestClasses(ScriptIteratorTest)
-		testng.addListener(new TestListenerAdapter())
-		testng.run()
-	}
-	
 	@Test
 	final void testSingleItem(){
 	    def item = new ScriptItem();
