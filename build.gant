@@ -18,6 +18,8 @@
 
 includeTool << gant.tools.Ivy
 
+ant.taskdef(name:"groovyc",classname:"org.codehaus.groovy.ant.Groovyc")
+
 println """
 ==========================================================
 
